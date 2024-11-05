@@ -19,4 +19,4 @@ npm install @zenfs/devices
 > [!NOTE]
 > Examples are written using ESM.
 
-*Work in progress*
+_Work in progress_
