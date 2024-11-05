@@ -20,3 +20,8 @@ npm install @zenfs/devices
 > Examples are written using ESM.
 
 _Work in progress_
+
+
+### Contribution
+
+We welcome collaboration. Please see our [contribution guidelines](https://github.com/zen-fs/core/blob/main/contributing.md).
