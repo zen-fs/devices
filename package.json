@@ -14,9 +14,9 @@
 	],
 	"type": "module",
 	"homepage": "https://github.com/zen-fs/devices",
+	"author": "David Konsumer <konsumer@jetboystudio.com>",
 	"contributors": [
-		"James Prevett <jp@jamespre.dev> (https://jamespre.dev)",
-		"David Konsumer <konsumer@jetboystudio.com>"
+		"James Prevett <jp@jamespre.dev> (https://jamespre.dev)"
 	],
 	"license": "MIT",
 	"repository": {
