@@ -6,9 +6,8 @@
 		"lib": ["ESNext", "ESNext.Disposable", "dom"],
 		"moduleResolution": "NodeNext",
 		"declaration": true,
-		"strict": false,
-		"allowImportingTsExtensions": true,
-		"noEmit": true
+		"strict": true,
+		"noEmit": false
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["node_modules"]

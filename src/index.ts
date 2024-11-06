@@ -1,3 +1,3 @@
-export { framebuffer } from './framebuffer.ts';
-export { dsp } from './dsp.ts';
-export { input } from './input.ts';
+export { framebuffer } from './framebuffer.js';
+export { dsp } from './dsp.js';
+export { input } from './input.js';

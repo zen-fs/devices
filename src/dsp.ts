@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import type { DeviceFile } from '@zenfs/core';
 
 interface DspOptions {
 	audioContext?: AudioContext;
 }
 
-// I inline worker, so no seperate file is needed.
+// I inline worker, so no separate file is needed.
 const workletUrl = URL.createObjectURL(
 	new Blob(
 		[
@@ -74,7 +75,7 @@ export const dsp = (options: DspOptions = {}) => {
 		name: 'dsp',
 		isBuffered: false,
 		read() {},
-		write(writeOptions: any = {}, data: ArrayLike<number>) {
+		write(file: DeviceFile, data: ArrayLike<number>) {
 			if (data?.length) {
 				new Uint8Array(audioBuffer).set(data);
 				dsp.port?.postMessage(new Float32Array(audioBuffer));
