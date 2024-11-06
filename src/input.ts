@@ -1,5 +1,5 @@
 interface InputOptions {
-  canvas?: HTMLElement
+	canvas?: HTMLElement;
 }
 
-export function input(options:InputOptions = {}){};
+export function input(options: InputOptions = {}) {}

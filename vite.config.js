@@ -1,11 +1,11 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vite';
 
 export default defineConfig({
 	// base: '.',
 	root: './example',
 	build: {
 		outDir: '../docs',
-		emptyOutDir: true
+		emptyOutDir: true,
 	},
 	resolve: {
 		alias: {

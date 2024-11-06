@@ -27,13 +27,13 @@ configure({ addDevices: true }).then(() => {
 	makestaticFb();
 
 	// example: write static to audio
-	const audioBuffer = new ArrayBuffer(audioContext.sampleRate * 4)
-	const audioBytes = new Uint8Array(audioBuffer)
-	const audioFloats = new Float32Array(audioBuffer)
+	const audioBuffer = new ArrayBuffer(audioContext.sampleRate * 4);
+	const audioBytes = new Uint8Array(audioBuffer);
+	const audioFloats = new Float32Array(audioBuffer);
 	setInterval(() => {
-	  for (let i in audioFloats){
-	    audioFloats[i] = Math.random() * 2 - 1
-	  }
-	  fs.promises.writeFile('/dev/dsp', audioBytes)
-	}, 1000)
-})
+		for (let i in audioFloats) {
+			audioFloats[i] = Math.random() * 2 - 1;
+		}
+		fs.promises.writeFile('/dev/dsp', audioBytes);
+	}, 1000);
+});
