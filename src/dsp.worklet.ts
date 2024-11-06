@@ -1,5 +1,4 @@
-/* eslint-env:node */
-/// <reference types="@types/audioworklet" />
+/// <reference types="./audioworklet.ts" />
 
 class Dsp extends AudioWorkletProcessor {
 	protected buffer?: Float32Array;
