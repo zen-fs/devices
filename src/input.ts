@@ -1,1 +1,1 @@
-export const input = ({ canvas }) => {};
+export const input = (options:any = {}) => {};

@@ -34,7 +34,7 @@ registerProcessor('zenfs-dsp', ZenFSDsp)
 
 `], { type: 'application/javascript' }))
 
-export const dsp = (options = {}) => {
+export const dsp = (options:any = {}) => {
   const audioCtx = options.audioContext || new AudioContext()
   const audioBuffer = new ArrayBuffer(audioCtx.sampleRate * 4)
 
@@ -60,8 +60,9 @@ export const dsp = (options = {}) => {
     name: 'dsp',
     isBuffered: false,
     read () {},
-    write({ device: { driver: { name }, ino }, fs, path, position }, data) {
-      if (data?.byteLength){
+    write (writeOptions:any = {}, data:ArrayLike<number>) {
+      const { device: { driver: { name }, ino }, fs, path, position } = writeOptions
+      if (data?.length){
         new Uint8Array(audioBuffer).set(data)
         dsp.port?.postMessage(new Float32Array(audioBuffer))
       }

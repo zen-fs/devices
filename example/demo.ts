@@ -11,7 +11,7 @@ await configure({ addDevices: true });
 
 // mount framebuffer & dsp
 fs.mounts.get('/dev').createDevice('/fb0', framebuffer({ canvas }));
-fs.mounts.get('/dev').createDevice('/dsp', dsp({audioContext}));
+fs.mounts.get('/dev').createDevice('/dsp', dsp({ audioContext }));
 
 // example: write static to framebuffer
 const screen = new Uint8Array(canvas.width * canvas.height * 4);
