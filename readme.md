@@ -1,7 +1,7 @@
 # ZenFS Devices
 
 > [!CAUTION]
-> This package is not published yet and is still under active development.
+> This package is still under active development.
 
 Adds additional devices to ZenFS
 

@@ -1,4 +1,4 @@
-Copyright (c) James Prevett and other ZenFS contributors.
+Copyright (c) James Prevett, David Konsumer, and other ZenFS contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
