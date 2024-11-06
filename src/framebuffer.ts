@@ -1,10 +1,10 @@
-import { Errno, ErrnoError, type DeviceFile } from '@zenfs/core';
+import { Errno, ErrnoError, type DeviceDriver, type DeviceFile } from '@zenfs/core';
 
 interface FramebufferOptions {
 	canvas?: HTMLCanvasElement;
 }
 
-export function framebuffer({ canvas }: FramebufferOptions = {}) {
+export function framebuffer({ canvas }: FramebufferOptions = {}): DeviceDriver {
 	if (!canvas) {
 		canvas = document.createElement('canvas');
 		document.body.appendChild(canvas);
@@ -17,13 +17,13 @@ export function framebuffer({ canvas }: FramebufferOptions = {}) {
 
 	return {
 		name: 'framebuffer',
-		isBuffered: false,
-		read() {},
-		write(file: DeviceFile, data: ArrayLike<number>) {
-			if (data?.length) {
-				const imageData = new ImageData(new Uint8ClampedArray(data), canvas.width, canvas.height);
-				ctx.putImageData(imageData, 0, 0);
-			}
+		read() {
+			return 0;
+		},
+		write(file: DeviceFile, data: Uint8Array) {
+			const imageData = new ImageData(new Uint8ClampedArray(data), canvas.width, canvas.height);
+			ctx.putImageData(imageData, 0, 0);
+			return data.byteLength;
 		},
 	};
 }

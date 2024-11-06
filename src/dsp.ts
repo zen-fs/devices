@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import type { DeviceFile } from '@zenfs/core';
+import type { DeviceDriver, DeviceFile } from '@zenfs/core';
 
 interface DspOptions {
 	audioContext?: AudioContext;
@@ -49,37 +49,32 @@ registerProcessor('zenfs-dsp', ZenFSDsp)
 	)
 );
 
-export const dsp = (options: DspOptions = {}) => {
-	const audioCtx = options.audioContext || new AudioContext();
-	const audioBuffer = new ArrayBuffer(audioCtx.sampleRate * 4);
+export async function dsp(options: DspOptions = {}): Promise<DeviceDriver> {
+	const context = options.audioContext || new AudioContext();
+	const audioBuffer = new ArrayBuffer(context.sampleRate * 4);
 
-	let dsp: AudioWorkletNode;
+	await context.audioWorklet.addModule(workletUrl);
 
-	audioCtx.audioWorklet
-		.addModule(workletUrl)
-		.then(() => {
-			dsp = new AudioWorkletNode(audioCtx, 'zenfs-dsp');
-			dsp.connect(audioCtx.destination);
-			dsp.port?.postMessage(audioBuffer);
-		})
-		.catch(e => {});
+	const dsp = new AudioWorkletNode(context, 'zenfs-dsp');
+	dsp.connect(context.destination);
+	dsp.port?.postMessage(audioBuffer);
 
 	// add a click-handler to resume (due to web security) https://goo.gl/7K7WLu
 	document.addEventListener('click', () => {
-		if (audioCtx.state !== 'running') {
-			audioCtx.resume().catch(e => {});
+		if (context.state !== 'running') {
+			context.resume().catch(e => {});
 		}
 	});
 
 	return {
 		name: 'dsp',
-		isBuffered: false,
-		read() {},
-		write(file: DeviceFile, data: ArrayLike<number>) {
-			if (data?.length) {
-				new Uint8Array(audioBuffer).set(data);
-				dsp.port?.postMessage(new Float32Array(audioBuffer));
-			}
+		read() {
+			return 0;
+		},
+		write(file: DeviceFile, data: Uint8Array): number {
+			new Uint8Array(audioBuffer).set(data);
+			dsp.port?.postMessage(new Float32Array(audioBuffer));
+			return data.byteLength;
 		},
 	};
-};
+}
