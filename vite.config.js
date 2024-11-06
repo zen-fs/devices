@@ -4,7 +4,8 @@ export default defineConfig({
 	// base: '.',
 	root: './example',
 	build: {
-		outDir: '../docs'
+		outDir: '../docs',
+		emptyOutDir: true
 	},
 	resolve: {
 		alias: {

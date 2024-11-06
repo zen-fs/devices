@@ -1,4 +1,8 @@
-export function framebuffer(options:any = {}) {
+interface FramebufferOptions {
+  canvas?: HTMLCanvasElement
+}
+
+export function framebuffer(options:FramebufferOptions = {}) {
     if (!options.canvas) {
       options.canvas = document.createElement('canvas')
       document.body.appendChild(options.canvas)

@@ -1,3 +1,7 @@
+interface DspOptions {
+  audioContext?: AudioContext
+}
+
 // I inline worker, so no seperate file is needed.
 const workletUrl = URL.createObjectURL(new Blob([`
 
@@ -34,7 +38,7 @@ registerProcessor('zenfs-dsp', ZenFSDsp)
 
 `], { type: 'application/javascript' }))
 
-export const dsp = (options:any = {}) => {
+export const dsp = (options:DspOptions = {}) => {
   const audioCtx = options.audioContext || new AudioContext()
   const audioBuffer = new ArrayBuffer(audioCtx.sampleRate * 4)
 

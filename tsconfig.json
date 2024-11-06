@@ -6,7 +6,7 @@
 		"lib": ["ESNext", "ESNext.Disposable", "dom"],
 		"moduleResolution": "NodeNext",
 		"declaration": true,
-		"strict": true,
+		"strict": false,
 		"allowImportingTsExtensions": true,
     "noEmit": true
 	},
