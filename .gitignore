@@ -1,6 +1,6 @@
 node_modules
 dist
-docs/(!demo)
+docs
 *.log
 tmp
 build

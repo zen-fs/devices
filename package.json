@@ -44,7 +44,7 @@
 		"format:check": "prettier --check .",
 		"lint": "eslint src",
 		"build": "tsc -p tsconfig.json",
-		"build:docs": "typedoc",
+		"build:docs": "typedoc && cp -r demo docs/demo",
 		"test": "tsx --test --experimental-test-coverage",
 		"prepublishOnly": "npm run build",
 		"start": "vite",
