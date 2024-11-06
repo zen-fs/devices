@@ -1,35 +1,39 @@
-import { configure, fs, type DeviceFS } from '@zenfs/core';
+import { configure, fs } from '@zenfs/core';
 import { framebuffer, dsp } from '@zenfs/devices';
 
 // this is optional, but I set them, so I have control
-const canvas = document.querySelector<HTMLCanvasElement>('#fb')!;
+const canvas = document.querySelector('#fb');
+const { width, height } = canvas;
+
 const audioContext = new AudioContext();
 
 // add initial devices like /dev/null, etc
 await configure({ addDevices: true });
 
-const devfs = fs.mounts.get('/dev') as DeviceFS;
+const devfs = fs.mounts.get('/dev');
 
 // mount framebuffer & dsp
 devfs.createDevice('/fb0', framebuffer({ canvas }));
 devfs.createDevice('/dsp', await dsp({ audioContext }));
 
 // example: write static to framebuffer
-const screen = new Uint8Array(canvas.width * canvas.height * 4);
-function makestaticFb() {
-	for (let i = 0; i < screen.byteLength; i += 4) {
-		screen[i] = Math.random() * 255;
-		screen[i + 1] = Math.random() * 255;
-		screen[i + 2] = Math.random() * 255;
-		screen[i + 3] = 255;
+const screen = new Uint8Array(width * height * 4);
+
+function makeGradientFb() {
+	for (let y = 0; y < height; y++) {
+		for (let x = 0; x < width; x++) {
+			const index = (y * width + x) * 4;
+			const gradientValue = (x / width) * 255;
+			screen.set([gradientValue, gradientValue, 255 - gradientValue, 255], index);
+		}
 	}
 	fs.promises.writeFile('/dev/fb0', screen);
-	requestAnimationFrame(makestaticFb);
+	requestAnimationFrame(makeGradientFb);
 }
-makestaticFb();
+makeGradientFb();
 
 // example: write static to audio
-const audioBuffer = new Float32Array(new ArrayBuffer(audioContext.sampleRate * 4));
+const audioBuffer = new Float32Array(audioContext.sampleRate * 4);
 setInterval(() => {
 	for (let i in audioBuffer) {
 		audioBuffer[i] = Math.random() * 2 - 1;
