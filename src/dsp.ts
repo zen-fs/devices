@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 interface DspOptions {
 	audioContext?: AudioContext;
 }
@@ -55,12 +58,12 @@ export const dsp = (options: DspOptions = {}) => {
 		dsp = new AudioWorkletNode(audioCtx, 'zenfs-dsp');
 		dsp.connect(audioCtx.destination);
 		dsp.port?.postMessage(audioBuffer);
-	});
+	}).catch(e => {});
 
 	// add a click-handler to resume (due to web security) https://goo.gl/7K7WLu
 	document.addEventListener('click', () => {
 		if (audioCtx.state !== 'running') {
-			audioCtx.resume();
+			audioCtx.resume().catch(e => {});
 		}
 	});
 
@@ -69,15 +72,6 @@ export const dsp = (options: DspOptions = {}) => {
 		isBuffered: false,
 		read() {},
 		write(writeOptions: any = {}, data: ArrayLike<number>) {
-			const {
-				device: {
-					driver: { name },
-					ino,
-				},
-				fs,
-				path,
-				position,
-			} = writeOptions;
 			if (data?.length) {
 				new Uint8Array(audioBuffer).set(data);
 				dsp.port?.postMessage(new Float32Array(audioBuffer));

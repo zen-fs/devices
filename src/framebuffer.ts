@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 interface FramebufferOptions {
 	canvas?: HTMLCanvasElement;
 }
@@ -13,15 +16,6 @@ export function framebuffer(options: FramebufferOptions = {}) {
 		isBuffered: false,
 		read() {},
 		write(writeOptions: any = {}, data: ArrayLike<number>) {
-			const {
-				device: {
-					driver: { name },
-					ino,
-				},
-				fs,
-				path,
-				position,
-			} = writeOptions;
 			if (data?.length) {
 				const imageData = new ImageData(new Uint8ClampedArray(data), options.canvas.width, options.canvas.height);
 				ctx.putImageData(imageData, 0, 0);
