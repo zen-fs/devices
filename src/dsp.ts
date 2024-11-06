@@ -54,11 +54,14 @@ export const dsp = (options: DspOptions = {}) => {
 
 	let dsp: AudioWorkletNode;
 
-	audioCtx.audioWorklet.addModule(workletUrl).then(() => {
-		dsp = new AudioWorkletNode(audioCtx, 'zenfs-dsp');
-		dsp.connect(audioCtx.destination);
-		dsp.port?.postMessage(audioBuffer);
-	}).catch(e => {});
+	audioCtx.audioWorklet
+		.addModule(workletUrl)
+		.then(() => {
+			dsp = new AudioWorkletNode(audioCtx, 'zenfs-dsp');
+			dsp.connect(audioCtx.destination);
+			dsp.port?.postMessage(audioBuffer);
+		})
+		.catch(e => {});
 
 	// add a click-handler to resume (due to web security) https://goo.gl/7K7WLu
 	document.addEventListener('click', () => {
