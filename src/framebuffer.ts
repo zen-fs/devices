@@ -2,7 +2,7 @@ import { Errno, ErrnoError } from '@zenfs/core';
 import type { DeviceDriver, DeviceFile } from '@zenfs/core';
 
 interface FramebufferOptions {
-	canvas?: HTMLCanvasElement;
+	canvas?: HTMLCanvasElement | null;
 }
 
 let framebufferN = 0;

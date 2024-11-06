@@ -1,39 +1,38 @@
-import { configure, InMemory, fs } from '@zenfs/core';
-import { IndexedDB } from '@zenfs/dom';
+import { configure, fs, type DeviceFS } from '@zenfs/core';
 import { framebuffer, dsp } from '@zenfs/devices';
 
 // this is optional, but I set them, so I have control
-const canvas = document.getElementById('fb');
+const canvas = document.querySelector<HTMLCanvasElement>('#fb')!;
 const audioContext = new AudioContext();
 
 // add initial devices like /dev/null, etc
-configure({ addDevices: true }).then(() => {
-	// mount framebuffer & dsp
-	fs.mounts.get('/dev').createDevice('/fb0', framebuffer({ canvas }));
-	fs.mounts.get('/dev').createDevice('/dsp', dsp({ audioContext }));
+await configure({ addDevices: true });
 
-	// example: write static to framebuffer
-	const screen = new Uint8Array(canvas.width * canvas.height * 4);
-	function makestaticFb() {
-		for (let i = 0; i < screen.byteLength; i += 4) {
-			screen[i] = Math.random() * 255;
-			screen[i + 1] = Math.random() * 255;
-			screen[i + 2] = Math.random() * 255;
-			screen[i + 3] = 255;
-		}
-		fs.promises.writeFile('/dev/fb0', screen);
-		requestAnimationFrame(makestaticFb);
+const devfs = fs.mounts.get('/dev') as DeviceFS;
+
+// mount framebuffer & dsp
+devfs.createDevice('/fb0', framebuffer({ canvas }));
+devfs.createDevice('/dsp', await dsp({ audioContext }));
+
+// example: write static to framebuffer
+const screen = new Uint8Array(canvas.width * canvas.height * 4);
+function makestaticFb() {
+	for (let i = 0; i < screen.byteLength; i += 4) {
+		screen[i] = Math.random() * 255;
+		screen[i + 1] = Math.random() * 255;
+		screen[i + 2] = Math.random() * 255;
+		screen[i + 3] = 255;
 	}
-	makestaticFb();
+	fs.promises.writeFile('/dev/fb0', screen);
+	requestAnimationFrame(makestaticFb);
+}
+makestaticFb();
 
-	// example: write static to audio
-	const audioBuffer = new ArrayBuffer(audioContext.sampleRate * 4);
-	const audioBytes = new Uint8Array(audioBuffer);
-	const audioFloats = new Float32Array(audioBuffer);
-	setInterval(() => {
-		for (let i in audioFloats) {
-			audioFloats[i] = Math.random() * 2 - 1;
-		}
-		fs.promises.writeFile('/dev/dsp', audioBytes);
-	}, 1000);
-});
+// example: write static to audio
+const audioBuffer = new Float32Array(new ArrayBuffer(audioContext.sampleRate * 4));
+setInterval(() => {
+	for (let i in audioBuffer) {
+		audioBuffer[i] = Math.random() * 2 - 1;
+	}
+	fs.promises.writeFile('/dev/dsp', audioBuffer);
+}, 1000);
