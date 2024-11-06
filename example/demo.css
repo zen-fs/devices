@@ -1,0 +1,19 @@
+html,
+body {
+	height: 100vh;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background: black;
+	color: white;
+	gap: 10px;
+	font-family: sans-serif;
+}
+a {
+	color: inherit;
+}
+canvas {
+	width: 100vw;
+}
