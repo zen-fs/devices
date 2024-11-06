@@ -1,10 +1,13 @@
-import { Errno, ErrnoError, type DeviceDriver, type DeviceFile } from '@zenfs/core';
+import { Errno, ErrnoError } from '@zenfs/core';
+import type { DeviceDriver, DeviceFile } from '@zenfs/core';
 
 interface FramebufferOptions {
 	canvas?: HTMLCanvasElement;
 }
 
-export function framebuffer({ canvas }: FramebufferOptions = {}): DeviceDriver {
+let framebufferN = 0;
+
+export function framebuffer({ canvas }: FramebufferOptions = {}): DeviceDriver<CanvasRenderingContext2D> {
 	if (!canvas) {
 		canvas = document.createElement('canvas');
 		document.body.appendChild(canvas);
@@ -17,6 +20,9 @@ export function framebuffer({ canvas }: FramebufferOptions = {}): DeviceDriver {
 
 	return {
 		name: 'framebuffer',
+		init() {
+			return { data: ctx, major: 29, minor: framebufferN++ };
+		},
 		read() {
 			return 0;
 		},
