@@ -1,42 +1,40 @@
 import { configure, fs } from '@zenfs/core';
-import { framebuffer, dsp } from '@zenfs/devices';
+import { framebuffer } from '@zenfs/devices';
 
-// this is optional, but I set them, so I have control
 const canvas = document.querySelector('#fb');
 const { width, height } = canvas;
 
-const audioContext = new AudioContext();
-
-// add initial devices like /dev/null, etc
 await configure({ addDevices: true });
 
-const devfs = fs.mounts.get('/dev');
+fs.mounts.get('/dev').createDevice('/fb0', framebuffer({ canvas }));
 
-// mount framebuffer & dsp
-devfs.createDevice('/fb0', framebuffer({ canvas }));
-devfs.createDevice('/dsp', await dsp({ audioContext }));
-
-// example: write static to framebuffer
+// example: write gradient with changing hue to framebuffer
 const screen = new Uint8Array(width * height * 4);
 
+let hue = 0;
+
+function hslToRgb(hue, saturation) {
+	const a = saturation / 2;
+	const f = n => {
+		const k = (n + hue / 30) % 12;
+		return 0.5 - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+	};
+	return [f(0) * 255, f(8) * 255, f(4) * 255];
+}
+
 function makeGradientFb() {
+	hue = (hue + 1) % 360; // Increment hue and keep it in the 0-359 range
+
 	for (let y = 0; y < height; y++) {
 		for (let x = 0; x < width; x++) {
 			const index = (y * width + x) * 4;
-			const gradientValue = (x / width) * 255;
-			screen.set([gradientValue, gradientValue, 255 - gradientValue, 255], index);
+			const gradientValue = (x / width) * 100; // Adjust the saturation and lightness effect
+			const [r, g, b] = hslToRgb(hue, gradientValue / 100, 0.5); // S=gradientValue, L=0.5 for vivid color
+
+			screen.set([r, g, b, 255], index);
 		}
 	}
-	fs.promises.writeFile('/dev/fb0', screen);
+	fs.writeFileSync('/dev/fb0', screen, { flag: 'r+' });
 	requestAnimationFrame(makeGradientFb);
 }
 makeGradientFb();
-
-// example: write static to audio
-const audioBuffer = new Float32Array(audioContext.sampleRate * 4);
-setInterval(() => {
-	for (let i in audioBuffer) {
-		audioBuffer[i] = Math.random() * 2 - 1;
-	}
-	fs.promises.writeFile('/dev/dsp', audioBuffer);
-}, 1000);

@@ -27,6 +27,9 @@ export function framebuffer({ canvas }: FramebufferOptions = {}): DeviceDriver<C
 			return 0;
 		},
 		write(file: DeviceFile, data: Uint8Array) {
+			if (data.byteLength < 4 * canvas.width * canvas.height) {
+				return 0;
+			}
 			const imageData = new ImageData(new Uint8ClampedArray(data), canvas.width, canvas.height);
 			ctx.putImageData(imageData, 0, 0);
 			return data.byteLength;

@@ -9,14 +9,14 @@ if ('AudioWorkletProcessor' in globalThis) {
 		public constructor() {
 			super();
 			this.port.onmessage = ({ data }: MessageEvent<Float32Array>) => {
-				this.buffer = data;
+				this.buffer = new Float32Array(data);
 			};
 		}
 
 		public process(inputs: Float32Array[][], outputs: Float32Array[][]): boolean {
-			if (this.buffer) {
-				const c = currentFrame % sampleRate;
-				outputs[0][0].set(this.buffer.slice(c, c + 128));
+			if (this.buffer && this.buffer.byteLength >= 128) {
+				outputs[0][0].set(this.buffer.slice(0, 128));
+				this.buffer = this.buffer.slice(128);
 			}
 			return true;
 		}
@@ -43,13 +43,11 @@ interface DspOptions {
 
 export async function dsp(options: DspOptions = {}): Promise<DeviceDriver<AudioWorkletNode>> {
 	const context = options.audioContext || new AudioContext();
-	const audioBuffer = new ArrayBuffer(context.sampleRate * 4);
 
 	await context.audioWorklet.addModule(import.meta.url);
 
 	const dsp = new AudioWorkletNode(context, 'zenfs:dsp');
 	dsp.connect(context.destination);
-	dsp.port.postMessage(audioBuffer);
 
 	// add a click-handler to resume (due to web security) https://goo.gl/7K7WLu
 	document.addEventListener('click', () => {
@@ -67,8 +65,7 @@ export async function dsp(options: DspOptions = {}): Promise<DeviceDriver<AudioW
 			return 0;
 		},
 		write(file: DeviceFile, data: Uint8Array): number {
-			new Uint8Array(audioBuffer).set(data);
-			dsp.port.postMessage(new Float32Array(audioBuffer));
+			dsp.port.postMessage(data.buffer);
 			return data.byteLength;
 		},
 	};
