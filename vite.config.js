@@ -1,3 +1,4 @@
+import { globSync } from 'fs';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -7,6 +8,9 @@ export default defineConfig({
 		outDir: '../docs/demo',
 		emptyOutDir: true,
 		target: 'esnext',
+		rollupOptions: {
+			input: globSync('demo/*.html'),
+		},
 	},
 	resolve: {
 		alias: {
