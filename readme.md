@@ -1,14 +1,11 @@
-# ZenFS Devices
+> [!IMPORTANT]
+> Code for devices is now part of [@zenfs/linux](https://github.com/zen-fs/linux)
 
-> [!CAUTION]
-> This package is still under active development.
+# ZenFS Devices
 
 Adds additional devices to ZenFS
 
 For more information, see the [API documentation](https://zenfs.dev/devices).
-
-> [!IMPORTANT]
-> Please read the [ZenFS core documentation](https://zenfs.dev/core)!
 
 ### Installing
 
